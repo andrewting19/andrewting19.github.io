@@ -1,6 +1,7 @@
 .shiritori {
-    margin-left: 100px;
-    float: left;
+    display: flex;
+    flex-direction: column;
+    max-width: 25%;
 }
 
 .points, .leaderboard {
