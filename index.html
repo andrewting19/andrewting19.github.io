@@ -1,459 +1,932 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="Andrew Ting - Software Engineer" />
-        <meta name="author" content="Andrew Ting" />
-        <meta property="og:title" content="Andrew Ting"/>
-        <meta property="og:type" content="Website"/>
-        <meta property="og:url" content="https://andrewting19.github.io/"/>
-        <meta property="og:image" content="https://andrewting19.github.io/assets/preview_home.PNG">
-        <meta property="og:description" content="Software Engineer. Ex-Uniswap. Building with AI."/>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Andrew Ting - Software Engineer building with AI">
+    <meta name="author" content="Andrew Ting">
+    <meta property="og:title" content="Andrew Ting">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://andrewting19.github.io/">
+    <meta property="og:description" content="Software Engineer. Ex-Uniswap. Building with AI.">
+    <title>andrew ting</title>
 
-        <title>Andrew Ting</title>
-        
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-166903806-1"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'UA-166903806-1');
-        </script>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
-        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
-        <!-- Font Awesome icons (free version)-->
-        <script src="https://use.fontawesome.com/releases/v5.12.1/js/all.js" crossorigin="anonymous"></script>
-        <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
-    </head>
-    <body id="page-top">
-        
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-tertiary: #18181b;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #52525b;
+            --accent: #22d3ee;
+            --accent-dim: rgba(34, 211, 238, 0.15);
+            --border: #27272a;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+            --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Scanline effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.03) 2px,
+                rgba(0, 0, 0, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Status bar */
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-left {
+            color: var(--text-tertiary);
+        }
+
+        .status-right {
+            display: flex;
+            gap: 20px;
+            color: var(--text-tertiary);
+        }
+
+        .status-right a {
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .status-right a:hover {
+            color: var(--accent);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Hero section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 40px;
+            position: relative;
+        }
+
+        .hero-content {
+            position: relative;
+        }
+
+        .prompt {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prompt-symbol {
+            color: var(--accent);
+        }
+
+        .hero h1 {
+            font-family: var(--font-mono);
+            font-size: clamp(32px, 8vw, 56px);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+
+        .hero h1 .highlight {
+            color: var(--accent);
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .hero-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-meta-item::before {
+            content: '//';
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-tertiary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+
+        .scroll-indicator svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-tertiary);
+        }
+
+        /* Sections */
+        section {
+            padding: 120px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .section-header {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Now section */
+        .now-content {
+            display: grid;
+            gap: 32px;
+        }
+
+        .now-item {
+            padding: 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .now-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .now-item h3 {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .now-item p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* Experience */
+        .experience-list {
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .experience-item {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 32px;
+            position: relative;
+        }
+
+        @media (max-width: 600px) {
+            .experience-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        .experience-date {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-tertiary);
+            padding-top: 4px;
+        }
+
+        .experience-content h3 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .experience-content .company {
+            color: var(--accent);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .experience-content p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .experience-content ul {
+            list-style: none;
+            margin-top: 16px;
+        }
+
+        .experience-content li {
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .experience-content li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-family: var(--font-mono);
+        }
+
+        .experience-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .tech-tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 4px 10px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-radius: 4px;
+        }
+
+        /* Projects */
+        .projects-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .project-card {
+            padding: 32px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .project-card h3 {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .project-arrow {
+            color: var(--text-tertiary);
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .project-card:hover .project-arrow {
+            transform: translate(4px, -4px);
+            color: var(--accent);
+        }
+
+        .project-card p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        /* Education */
+        .education-item {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .education-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .education-content h3 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .education-content .degree {
+            color: var(--accent);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .education-content p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Contact */
+        .contact-content {
+            text-align: center;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .contact-content h2 {
+            font-family: var(--font-mono);
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+
+        .contact-content p {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .contact-link:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .contact-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-content {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .footer-ascii {
+            margin-bottom: 16px;
+            line-height: 1.2;
+            font-size: 10px;
+            color: var(--text-tertiary);
+            opacity: 0.5;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
+        /* Cursor blink effect */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--accent);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Selection */
+        ::selection {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="status-indicator"></span>
+            <span>andrew@ting:~$</span>
+        </div>
+        <div class="status-right">
+            <a href="#now">now</a>
+            <a href="#work">work</a>
+            <a href="#projects">projects</a>
+            <a href="#contact">contact</a>
+        </div>
+    </div>
+
+    <main>
+        <section class="hero">
             <div class="container">
-                <a class="navbar-brand js-scroll-trigger" href="#page-top">Home</a>
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">Menu<i class="fas fa-bars ml-1"></i></button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav text-uppercase ml-auto">
-                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#timeline">Timeline</a></li>
-                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#portfolio">Projects</a></li>
-                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#contact">Contact</a></li>
-                    </ul>
+                <div class="hero-content">
+                    <div class="prompt fade-in">
+                        <span class="prompt-symbol">$</span>
+                        <span>whoami</span>
+                    </div>
+                    <h1 class="fade-in delay-1">
+                        andrew <span class="highlight">ting</span><span class="cursor"></span>
+                    </h1>
+                    <p class="hero-subtitle fade-in delay-2">
+                        Software engineer building at the intersection of AI and developer tooling.
+                        Previously shipping consumer products at Uniswap Labs.
+                        Now exploring what's possible when you let AI write the code.
+                    </p>
+                    <div class="hero-meta fade-in delay-3">
+                        <span class="hero-meta-item">berkeley eecs '23</span>
+                        <span class="hero-meta-item">ex-uniswap</span>
+                        <span class="hero-meta-item">nyc</span>
+                    </div>
                 </div>
             </div>
-        </nav>
-
-        <!-- Masthead-->
-        <header class="masthead">
-            <div class="container">
-                <div class="masthead-subheading">Software Engineer</div>
-                <div class="masthead-heading">Andrew Ting</div>
-                <p class="text-muted">Ex-Uniswap Labs · Currently building with AI</p>
-            </div>
-            <div id="particles-js"></div>
-        </header>
-
-        <!-- Timeline-->
-        <section class="page-section" id="timeline">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Timeline</h2>
-                    <h3 class="section-subheading text-muted"></h3>
-                </div>
-                <ul class="timeline">
-
-                    <li class="timeline-inverted">
-                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/uniswap.jpg" alt="Building" /></div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>Oct 2025 - Present</h4>
-                                <h4 class="subheading">Building</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">Left Uniswap to build independently. Shipping fast with Claude Code. Exploring ML, automation, and whatever seems interesting.</p></div>
-                        </div>
-                    </li>
-
-                    <li>
-                        <a data-toggle="modal" href="#timelineModalUniswap">
-                            <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/uniswap.jpg" alt="Uniswap" /></div>
-                        </a>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>Sep 2023 - Oct 2025</h4>
-                                <h4 class="subheading">Software Engineer @ Uniswap Labs</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">Shipped uni.eth usernames (2M+ claimed), token warnings protecting $50B+ in swap volume. Led AI coding adoption across 50+ eng org.</p></div>
-                        </div>
-                    </li>
-
-                    <li class="timeline-inverted">
-                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/cal.svg" alt="Berkeley" /></div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>May 2023</h4>
-                                <h4 class="subheading">Graduated UC Berkeley</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">B.S. Electrical Engineering and Computer Sciences. 3.9 GPA. Final semester abroad in Sendai, Japan.</p></div>
-                        </div>
-                    </li>
-
-                    <li>
-                        <a data-toggle="modal" href="#timelineModalUniswapIntern">
-                            <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/uniswap.jpg" alt="Uniswap" /></div>
-                        </a>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>Summer 2022</h4>
-                                <h4 class="subheading">SWE Intern @ Uniswap Labs</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">52 closed PRs, 10,000 lines of code in 3 months. Built Unicons v1 and 3 core features blocking app launch.</p></div>
-                        </div>
-                    </li>
-
-                    <li class="timeline-inverted">
-                        <a data-toggle="modal" href="#timelineModalCaravan">
-                            <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/camel1.svg" alt="Caravan" /></div>
-                        </a>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>Fall 2021 - Winter 2022</h4>
-                                <h4 class="subheading">Caravan</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">Won $14,650 at Cal Hacks and ETHGlobal Unicode. Received $20,000 Uniswap Grant to build a secondary market for Uniswap V3 liquidity positions.</p></div>
-                        </div>
-                    </li>
-
-                    <li>
-                        <a data-toggle="modal" href="#timelineModalPANW">
-                            <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/panw.png" alt="PANW" /></div>
-                        </a>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>Summer 2021</h4>
-                                <h4 class="subheading">SWE Intern @ Palo Alto Networks</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">Built load testing framework saving $70,000/year. Created automated data collection for ML models.</p></div>
-                        </div>
-                    </li>
-
-                    <li class="timeline-inverted">
-                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/cal.svg" alt="Berkeley" /></div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>Fall 2019</h4>
-                                <h4 class="subheading">Started UC Berkeley</h4>
-                            </div>
-                            <div class="timeline-body"><p class="text-muted">Began pursuing B.S. in EECS at UC Berkeley's College of Engineering.</p></div>
-                        </div>
-                    </li>
-
-                </ul>
+            <div class="scroll-indicator fade-in delay-5">
+                <span>scroll</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M19 12l-7 7-7-7"/>
+                </svg>
             </div>
         </section>
 
-        <!-- Portfolio Grid-->
-        <section class="page-section bg-light" id="portfolio">
+        <section id="now">
             <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Projects</h2>
-                    <h3 class="section-subheading text-muted">Recent open source work</h3>
+                <div class="section-header">
+                    <span>// now</span>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4 col-sm-6 mb-4">
-                        <div class="portfolio-item">
-                            <a class="portfolio-link" data-toggle="modal" href="#portfolioModalClaudeTing">
-                                <div class="portfolio-hover">
-                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
-                                </div>
-                                <img class="img-fluid" src="assets/img/about/uniswap.jpg" alt="" width="400" height="300" />
-                            </a>
-                            <div class="portfolio-caption">
-                                <div class="portfolio-caption-heading">claude-ting</div>
-                                <div class="portfolio-caption-subheading text-muted">Docker isolation for Claude Code</div>
+                <div class="now-content">
+                    <div class="now-item">
+                        <h3>Building independently</h3>
+                        <p>
+                            Left Uniswap in October 2025 to build full-time with AI. Shipping fast with Claude Code.
+                            Exploring ML, automation, trading systems, and whatever seems interesting.
+                            The thesis: AI changes what one person can build alone.
+                        </p>
+                    </div>
+                    <div class="now-item">
+                        <h3>Current focus</h3>
+                        <p>
+                            Developer tools for AI-assisted coding. Real-time trading infrastructure.
+                            Running Claude Code in Docker for safe autonomous execution.
+                            Open-sourcing everything useful.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="work">
+            <div class="container">
+                <div class="section-header">
+                    <span>// work</span>
+                </div>
+                <div class="experience-list">
+                    <div class="experience-item">
+                        <div class="experience-date">2023 - 2025</div>
+                        <div class="experience-content">
+                            <h3>Software Engineer</h3>
+                            <div class="company">Uniswap Labs</div>
+                            <ul>
+                                <li>Shipped uni.eth usernames (on-chain ENS subdomains). 2M+ claimed.</li>
+                                <li>Built Token Warnings system protecting $50B+ in annual swap volume</li>
+                                <li>Led AI coding adoption across 50+ person eng org. Open-sourced internal tooling.</li>
+                                <li>Built Slack bot using Claude + BigQuery for natural language analytics</li>
+                            </ul>
+                            <div class="experience-tech">
+                                <span class="tech-tag">React</span>
+                                <span class="tech-tag">React Native</span>
+                                <span class="tech-tag">AWS</span>
+                                <span class="tech-tag">TypeScript</span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 mb-4">
-                        <div class="portfolio-item">
-                            <a class="portfolio-link" data-toggle="modal" href="#portfolioModalHush">
-                                <div class="portfolio-hover">
-                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
-                                </div>
-                                <img class="img-fluid" src="assets/img/about/uniswap.jpg" alt="" width="400" height="300" />
-                            </a>
-                            <div class="portfolio-caption">
-                                <div class="portfolio-caption-heading">HUSH Focus</div>
-                                <div class="portfolio-caption-subheading text-muted">Productivity Chrome extension</div>
+
+                    <div class="experience-item">
+                        <div class="experience-date">2022</div>
+                        <div class="experience-content">
+                            <h3>Software Engineering Intern</h3>
+                            <div class="company">Uniswap Labs</div>
+                            <ul>
+                                <li>52 closed PRs, 10,000 lines of code in 3 months (7th highest of all contributors)</li>
+                                <li>Built Unicons v1. Owned 3 core features blocking mobile app launch.</li>
+                            </ul>
+                            <div class="experience-tech">
+                                <span class="tech-tag">React Native</span>
+                                <span class="tech-tag">TypeScript</span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 mb-4">
-                        <div class="portfolio-item">
-                            <a class="portfolio-link" data-toggle="modal" href="#portfolioModalSuperstack">
-                                <div class="portfolio-hover">
-                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
-                                </div>
-                                <img class="img-fluid" src="assets/img/about/uniswap.jpg" alt="" width="400" height="300" />
-                            </a>
-                            <div class="portfolio-caption">
-                                <div class="portfolio-caption-heading">Superstack</div>
-                                <div class="portfolio-caption-subheading text-muted">Real-time RSI dashboard</div>
+
+                    <div class="experience-item">
+                        <div class="experience-date">2021 - 2022</div>
+                        <div class="experience-content">
+                            <h3>Co-Founder</h3>
+                            <div class="company">Caravan</div>
+                            <ul>
+                                <li>Built secondary market for Uniswap V3 liquidity positions</li>
+                                <li>Won $14,650 at Cal Hacks and ETHGlobal Unicode</li>
+                                <li>Received $20,000 Uniswap Grant</li>
+                            </ul>
+                            <div class="experience-tech">
+                                <span class="tech-tag">Solidity</span>
+                                <span class="tech-tag">Angular</span>
+                                <span class="tech-tag">web3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="experience-date">2021</div>
+                        <div class="experience-content">
+                            <h3>Software Engineering Intern</h3>
+                            <div class="company">Palo Alto Networks</div>
+                            <ul>
+                                <li>Built load testing framework saving $70,000/year. 500+ sessions/month.</li>
+                                <li>Created automated data collection for ML models</li>
+                            </ul>
+                            <div class="experience-tech">
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Docker</span>
+                                <span class="tech-tag">AWS</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-       
-        <!-- Contact-->
-        <section class="page-section-short" id="contact">
+
+        <section id="education">
             <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Contact</h2>
+                <div class="section-header">
+                    <span>// education</span>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4"></div>
-                    <div class="col-lg-4">
-                        <div class="team-member">
-                            <img class="mx-auto rounded-circle" src="assets/img/andrew1.jpg" alt=""/>
-                            <br /><p></p>
-                            <h5>Andrew Ting</h5>
-                            <p class="text-muted">Feel free to reach out.</p>
-                            <a class="btn btn-dark btn-social mx-2" href="https://twitter.com/andrewtingnyc" target="_blank"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="https://www.linkedin.com/in/andrewwting/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="https://github.com/andrewting19" target="_blank"><i class="fab fa-github"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" href="mailto:andrewtingnyc@gmail.com"><i class="fa fa-envelope"></i></a>
-                        </div>
+                <div class="education-item">
+                    <div class="education-icon">🐻</div>
+                    <div class="education-content">
+                        <h3>UC Berkeley</h3>
+                        <div class="degree">B.S. Electrical Engineering & Computer Sciences</div>
+                        <p>Class of 2023 · 3.9 GPA · Final semester abroad in Sendai, Japan</p>
                     </div>
-                    <div class="col-lg-4"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Footer-->
-        <footer class="footer py-4">
+        <section id="projects">
             <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-4 text-lg-left"></div>
-                    <div class="col-lg-4 my-3 my-lg-0">© 2025 Andrew Ting
+                <div class="section-header">
+                    <span>// projects</span>
+                </div>
+                <div class="projects-grid">
+                    <a href="https://github.com/andrewting19/claude-ting" target="_blank" class="project-card">
+                        <div class="project-header">
+                            <h3>claude-ting</h3>
+                            <span class="project-arrow">↗</span>
+                        </div>
+                        <p>
+                            Run Claude Code in yolo mode with Docker isolation. One-click setup with shared OAuth.
+                            MCP server that lets Claude spawn and control other Claude instances via tmux.
+                        </p>
+                        <div class="experience-tech">
+                            <span class="tech-tag">Docker</span>
+                            <span class="tech-tag">Claude Code</span>
+                            <span class="tech-tag">MCP</span>
+                        </div>
+                    </a>
+
+                    <a href="https://github.com/andrewting19/hush-focus" target="_blank" class="project-card">
+                        <div class="project-header">
+                            <h3>HUSH Focus</h3>
+                            <span class="project-arrow">↗</span>
+                        </div>
+                        <p>
+                            Chrome extension that blocks distracting sites when Claude Code is idle.
+                            Turns doom-scrolling into a reward for shipping code. Forked and redesigned with custom notifications.
+                        </p>
+                        <div class="experience-tech">
+                            <span class="tech-tag">Chrome Extension</span>
+                            <span class="tech-tag">Web Audio API</span>
+                        </div>
+                    </a>
+
+                    <a href="https://github.com/andrewting19/superstack" target="_blank" class="project-card">
+                        <div class="project-header">
+                            <h3>Superstack</h3>
+                            <span class="project-arrow">↗</span>
+                        </div>
+                        <p>
+                            Real-time RSI dashboard for crypto and stocks. Custom Superstack indicator alerts.
+                            WebSocket feeds from Coinbase, Hyperliquid, and Alpaca.
+                        </p>
+                        <div class="experience-tech">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">TypeScript</span>
+                            <span class="tech-tag">WebSockets</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                <div class="contact-content">
+                    <h2>let's connect<span class="cursor"></span></h2>
+                    <p>Building something interesting or just want to chat about AI, crypto, or dev tools.</p>
+                    <div class="contact-links">
+                        <a href="mailto:andrewtingnyc@gmail.com" class="contact-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                <path d="M22 6l-10 7L2 6"/>
+                            </svg>
+                            email
+                        </a>
+                        <a href="https://github.com/andrewting19" target="_blank" class="contact-link">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                            </svg>
+                            github
+                        </a>
+                        <a href="https://twitter.com/andrewtingnyc" target="_blank" class="contact-link">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                            twitter
+                        </a>
+                        <a href="https://www.linkedin.com/in/andrewwting/" target="_blank" class="contact-link">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                            linkedin
+                        </a>
                     </div>
                 </div>
             </div>
-        </footer>
+        </section>
+    </main>
 
-        <!-- Timeline Modals -->
-        <div class="timeline-modal modal fade" id="timelineModalUniswap" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-dismiss="modal"><img src="assets/img/close-icon.svg" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <h3>Uniswap Labs</h3>
-                                    <p class="item-intro text-muted">Software Engineer (Sep 2023 - Oct 2025)</p>
-                                    <ul>
-                                        <li>Owned and shipped uni.eth usernames (on-chain ENS subdomain usernames). 2M+ claimed</li>
-                                        <li>Owned and shipped Token Warnings for Uniswap Wallet and Interface protecting $50B+ in annual swap volume</li>
-                                        <li>Led AI coding adoption across 50+ eng org. Standardized Claude Code workflows and open-sourced internal tooling</li>
-                                        <li>Built Slack bot using Claude + BigQuery for natural language queries across all company metrics</li>
-                                    </ul>
-                                    <ul class="list-inline">
-                                        <li><b>Tech:</b> React, React Native, AWS Lambda, DynamoDB, ECS</li>
-                                    </ul>
-                                    <button class="btn btn-primary" data-dismiss="modal" type="button"><i class="fas fa-times mr-1"></i>Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <footer>
+        <div class="container">
+            <pre class="footer-ascii">
+    _____          __                  __  .__
+   /  _  \   _____/  |_  __ __  _____ |  | |  |  ___.__.
+  /  /_\  \ /    \   __\|  |  \/     \|  | |  | <   |  |
+ /    |    \   |  \  |  |  |  /  Y Y  \  |_|  |__\___  |
+ \____|__  /___|  /__|  |____/|__|_|  /____/____/ ____|
+         \/     \/                  \/           \/
+            </pre>
+            <div class="footer-content">
+                <span>© 2025 andrew ting · built with claude</span>
             </div>
         </div>
+    </footer>
 
-        <div class="timeline-modal modal fade" id="timelineModalUniswapIntern" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-dismiss="modal"><img src="assets/img/close-icon.svg" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <h3>Uniswap Labs</h3>
-                                    <p class="item-intro text-muted">Software Engineering Intern (May 2022 - Aug 2022)</p>
-                                    <ul>
-                                        <li>52 closed PRs, 10,000 lines of code touched (7th highest of all contributors) in 3 months</li>
-                                        <li>Built Unicons v1. Owned and built 3 core features blocking app launch</li>
-                                    </ul>
-                                    <ul class="list-inline">
-                                        <li><b>Tech:</b> React Native</li>
-                                    </ul>
-                                    <button class="btn btn-primary" data-dismiss="modal" type="button"><i class="fas fa-times mr-1"></i>Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-        <div class="timeline-modal modal fade" id="timelineModalCaravan" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-dismiss="modal"><img src="assets/img/close-icon.svg" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <h3>Caravan</h3>
-                                    <p class="item-intro text-muted">Co-Founder</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/about/camel1.svg" alt="" style="max-height: 200px;" />
-                                    <ul>
-                                        <li>Built a secondary market for Uniswap V3 liquidity positions</li>
-                                        <li>Won $11,000 as Finalist at ETHGlobal Unicode hackathon</li>
-                                        <li>Won $3,650 at Cal Hacks 8.0 (1st place Uniswap Innovation Challenge)</li>
-                                        <li>Received $20,000 grant from Uniswap Grants Program</li>
-                                    </ul>
-                                    <ul class="list-inline">
-                                        <li><b>Tech:</b> Angular, Solidity, web3, Uniswap V3</li>
-                                        <li><b>Link:</b> <a href="https://youtu.be/TH9EadUYfLk?t=2626" target="_blank">Demo</a></li>
-                                    </ul>
-                                    <button class="btn btn-primary" data-dismiss="modal" type="button"><i class="fas fa-times mr-1"></i>Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
 
-        <div class="timeline-modal modal fade" id="timelineModalPANW" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-dismiss="modal"><img src="assets/img/close-icon.svg" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <h3>Palo Alto Networks</h3>
-                                    <p class="item-intro text-muted">Prisma Cloud SQA Performance Engineer Intern</p>
-                                    <ul>
-                                        <li>Developed load testing framework and web app for all Prisma Cloud API performance testing</li>
-                                        <li>Saves $70,000/year, runs 500+ sessions/month</li>
-                                        <li>Created automated data collection script for ML models. Saves 2 hrs/run</li>
-                                    </ul>
-                                    <ul class="list-inline">
-                                        <li><b>Tech:</b> Python, Angular, Docker, AWS, MySQL, Gitlab CI/CD</li>
-                                        <li><b>Date:</b> Summer 2021</li>
-                                    </ul>
-                                    <button class="btn btn-primary" data-dismiss="modal" type="button"><i class="fas fa-times mr-1"></i>Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(section);
+        });
 
-        <!-- Portfolio Modals -->
-        <div class="portfolio-modal modal fade" id="portfolioModalClaudeTing" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-dismiss="modal"><img src="assets/img/close-icon.svg" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <h2>claude-ting</h2>
-                                    <p class="item-intro text-muted">Run Claude Code and Codex CLI in yolo mode with Docker isolation</p>
-                                    <ul>
-                                        <li>One-click setup with shared OAuth/configs</li>
-                                        <li>MCP server that lets Claude spawn and control other Claude Code instances via tmux</li>
-                                        <li>Safe sandboxed environment for autonomous AI coding</li>
-                                    </ul>
-                                    <ul class="list-inline">
-                                        <li><b>Tech:</b> Docker, Claude Code, MCP</li>
-                                        <li><b>Link:</b> <a href="https://github.com/andrewting19/claude-ting" target="_blank">GitHub</a></li>
-                                    </ul>
-                                    <button class="btn btn-primary" data-dismiss="modal" type="button"><i class="fas fa-times mr-1"></i>Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        // Update status bar on scroll
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.status-right a');
 
-        <div class="portfolio-modal modal fade" id="portfolioModalHush" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-dismiss="modal"><img src="assets/img/close-icon.svg" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <h2>HUSH Focus</h2>
-                                    <p class="item-intro text-muted">Chrome extension that blocks distracting sites when Claude Code is idle</p>
-                                    <ul>
-                                        <li>Forked and completely redesigned the UI</li>
-                                        <li>Added notification system with Web Audio API</li>
-                                        <li>Docker support for server component</li>
-                                        <li>Turns doom-scrolling into a reward for shipping code</li>
-                                    </ul>
-                                    <ul class="list-inline">
-                                        <li><b>Tech:</b> Chrome Extension, Web Audio API, Docker</li>
-                                        <li><b>Link:</b> <a href="https://github.com/andrewting19/hush-focus" target="_blank">GitHub</a></li>
-                                    </ul>
-                                    <button class="btn btn-primary" data-dismiss="modal" type="button"><i class="fas fa-times mr-1"></i>Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
 
-        <div class="portfolio-modal modal fade" id="portfolioModalSuperstack" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-dismiss="modal"><img src="assets/img/close-icon.svg" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <h2>Superstack</h2>
-                                    <p class="item-intro text-muted">Real-time RSI dashboard for crypto and stocks</p>
-                                    <ul>
-                                        <li>Custom Superstack indicator alerts</li>
-                                        <li>WebSocket feeds from Coinbase, Hyperliquid, and Alpaca</li>
-                                        <li>Real-time streaming price data</li>
-                                    </ul>
-                                    <ul class="list-inline">
-                                        <li><b>Tech:</b> React, TypeScript, Zustand, WebSockets</li>
-                                        <li><b>Link:</b> <a href="https://github.com/andrewting19/superstack" target="_blank">GitHub</a></li>
-                                    </ul>
-                                    <button class="btn btn-primary" data-dismiss="modal" type="button"><i class="fas fa-times mr-1"></i>Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Particles from Vincent Garreau -->
-        <script src="js/particles.js"></script>
-        <script src="js/app.js"></script>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-        <!-- Third party plugin JS-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
-    </body>
+            navLinks.forEach(link => {
+                link.style.color = '';
+                if (link.getAttribute('href') === '#' + current) {
+                    link.style.color = 'var(--accent)';
+                }
+            });
+        });
+    </script>
+</body>
 </html>

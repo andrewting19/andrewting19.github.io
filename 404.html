@@ -1,61 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="Andrew Ting" />
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Page not found">
+    <meta name="author" content="Andrew Ting">
+    <title>404 - andrew ting</title>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #52525b;
+            --accent: #22d3ee;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+        }
 
-        <meta property="og:title" content="Andrew Ting 404"/>
-        <meta property="og:type" content="Website"/>
-        <meta property="og:url" content="https://andrewting19.github.io/404"/>
-        <meta property="og:description" content="404"/>
-        
-        <title>404</title>
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-166903806-1"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-            gtag('config', 'UA-166903806-1');
-        </script>
-        <link rel="canonical" href="https://andrewting19.github.io/404">
-        <!-- <link rel="icon" type="image/x-icon" href="assets/img/lambda.ico" /> -->
-        <!-- Font Awesome icons (free version)-->
-        <script src="https://use.fontawesome.com/releases/v5.12.1/js/all.js" crossorigin="anonymous"></script>
-        <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
-    </head>
-    <body id="page-top">
-        
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-            <div class="container">
-                <a class="navbar-brand js-scroll-trigger" href="https://andrewting19.github.io/">Back</a><button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">Menu<i class="fas fa-bars ml-1"></i></button>
-            </div>
-        </nav>
-        <!-- Masthead-->
-        <header class="masthead">
+        body {
+            font-family: var(--font-mono);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
 
-            <div class="container">
-                <div class="masthead-heading">404</div>
-                <p style="color: #3072c1;">Page not found</p>
-        <p style="color:black;">Yoinks! You're not on the right page.</p>
+        .error-code {
+            font-size: clamp(80px, 20vw, 180px);
+            font-weight: 300;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 24px;
+            opacity: 0.8;
+        }
 
-        <!-- Footer-->
-        <footer class="footer py-4">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-4 text-lg-left"></div>
-                    <div class="col-lg-4 my-3 my-lg-0">© 2020 Andrew Ting
-                    </div>
-                </div>
-            </div>
-        </footer>
+        .error-message {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .error-detail {
+            font-size: 14px;
+            color: var(--text-tertiary);
+            margin-bottom: 48px;
+        }
+
+        .terminal-output {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 48px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .terminal-line {
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .prompt {
+            color: var(--accent);
+        }
+
+        .command {
+            color: var(--text-primary);
+        }
+
+        .output {
+            color: var(--text-tertiary);
+        }
+
+        .back-link {
+            font-size: 14px;
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 12px 24px;
+            border: 1px solid var(--text-tertiary);
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--accent);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-code">404</div>
+    <div class="error-message">page not found</div>
+    <div class="error-detail">the requested resource doesn't exist</div>
+
+    <div class="terminal-output">
+        <div class="terminal-line">
+            <span class="prompt">$ </span>
+            <span class="command">cat /var/www/html/requested-page</span>
+        </div>
+        <div class="terminal-line">
+            <span class="output">cat: /var/www/html/requested-page: No such file or directory</span>
+        </div>
+        <div class="terminal-line">
+            <span class="prompt">$ </span>
+            <span class="command">cd ~</span><span class="cursor"></span>
+        </div>
+    </div>
+
+    <a href="/" class="back-link">← back to home</a>
+</body>
 </html>
