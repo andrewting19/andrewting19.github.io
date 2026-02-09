@@ -7,11 +7,11 @@
     <meta name="author" content="Andrew Ting">
     <meta property="og:title" content="Tools I Actually Use for AI-Assisted Coding">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://andrewting.dev/blog/posts/tools-i-actually-use.html">
+    <meta property="og:url" content="https://andrewting.dev/blog/posts/tools-i-actually-use/">
     <meta property="og:description" content="My actual AI coding setup  - Claude Code, Agent Board, Docker sandboxing, and why I haven't touched an IDE in six months.">
     <title>tools i actually use  - andrew ting</title>
 
-    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="../../../assets/img/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -306,9 +306,20 @@
             padding: 40px 0;
             border-top: 1px solid var(--border);
             text-align: center;
-            color: var(--text-tertiary);
+        }
+
+        .footer-content {
             font-family: var(--font-mono);
             font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .footer-ascii {
+            margin-bottom: 16px;
+            line-height: 1.2;
+            font-size: 10px;
+            color: var(--text-tertiary);
+            opacity: 0.5;
         }
 
         /* Animations */
@@ -340,18 +351,18 @@
             <span>andrew@ting:~$</span>
         </div>
         <div class="status-right">
-            <a href="../../#now">now</a>
-            <a href="../../#work">work</a>
-            <a href="../../#projects">projects</a>
-            <a href="../../#contact" class="hide-mobile">contact</a>
-            <a href="../" class="active">blog</a>
+            <a href="../../../#now">now</a>
+            <a href="../../../#work">work</a>
+            <a href="../../../#projects">projects</a>
+            <a href="../../../#contact" class="hide-mobile">contact</a>
+            <a href="../../" class="active">blog</a>
         </div>
     </div>
 
     <main>
         <div class="container">
             <div class="back-nav fade-in">
-                <a href="../">← cd ~/blog</a>
+                <a href="../../">← cd ~/blog</a>
             </div>
 
             <header class="article-header fade-in delay-1">
@@ -396,7 +407,7 @@
 
                 <p><a href="https://github.com/gbasin/agentboard" target="_blank">Agentboard</a> is a web UI for tmux. It's not my project but I'm one of the main contributors. This was another huge unlock: terminals in the browser.</p>
 
-                <img src="../../assets/img/agentboard-example.png" alt="Agentboard showing multiple Claude Code sessions running in a browser-based tmux layout">
+                <img src="../../../assets/img/agentboard-example.png" alt="Agentboard showing multiple Claude Code sessions running in a browser-based tmux layout">
 
                 <p>Every Claude Code session runs in tmux. Agentboard just puts them all in a browser layout where I can see what each one is doing. When an agent spins up a sub-agent aka another "developer" (more on that later), Agentboard automatically discovers it because it's just another tmux session. I can watch, I can jump in and take over manually, I can kill it. Total visibility, all the time.</p>
 
@@ -476,7 +487,16 @@
             </article>
 
             <footer>
-                <p>andrew ting · 2026</p>
+                <pre class="footer-ascii">
+       _   _   _
+      /_\ | |_(_)_ _  __ _
+     / _ \|  _| | ' \/ _` |
+    /_/ \_\\__|_|_||_\__, |
+                     |___/
+                </pre>
+                <div class="footer-content">
+                    <span>&copy; 2026 andrew ting &middot; built with claude</span>
+                </div>
             </footer>
         </div>
     </main>
