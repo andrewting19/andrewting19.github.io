@@ -322,6 +322,52 @@
             opacity: 0.5;
         }
 
+        /* Mode toggle */
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            margin-bottom: 32px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        .mode-label {
+            color: var(--text-tertiary);
+            margin-right: 12px;
+        }
+
+        .mode-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-tertiary);
+            padding: 4px 14px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn:first-of-type {
+            border-radius: 4px 0 0 4px;
+        }
+
+        .mode-btn:last-of-type {
+            border-radius: 0 4px 4px 0;
+            margin-left: -1px;
+        }
+
+        .mode-btn.active {
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-color: var(--accent);
+            position: relative;
+            z-index: 1;
+        }
+
+        .mode-btn:hover:not(.active) {
+            color: var(--text-secondary);
+        }
+
         /* Animations */
         .fade-in {
             opacity: 0;
@@ -377,7 +423,13 @@
                 </div>
             </header>
 
-            <article class="article-body fade-in delay-2">
+            <div class="mode-toggle fade-in delay-2">
+                <span class="mode-label">$ mode</span>
+                <button class="mode-btn active" data-mode="unhinged">unhinged</button>
+                <button class="mode-btn" data-mode="normal">normal</button>
+            </div>
+
+            <article class="article-body fade-in delay-2" id="article-unhinged">
 
                 <p>No cap, no yap. AI has written all my code for the past 6 months. No more IDE. No VS Code, no Cursor, no ma nothing. Just good ol' TUIs and Claude Code, which definitely has no TUI bugs whatsoever. Yup, I'm not kidding. Coding agents do literally 100% of my coding now. All I do is yap at my computer and code gets written. It's hilarious. It also actually works. It doesn't just work, it fucking flies.</p>
 
@@ -486,6 +538,99 @@
 
             </article>
 
+            <article class="article-body fade-in delay-2" id="article-normal" style="display: none;">
+
+                <p>AI has written all my code for the past six months. I don't use an IDE anymore. No VS Code, no Cursor, nothing. Just terminals and Claude Code. It sounds extreme, but it works remarkably well. Here's the full breakdown of what my setup actually looks like.</p>
+
+                <h2>How my day works</h2>
+
+                <p>I start each morning by opening <a href="https://github.com/gbasin/agentboard" target="_blank">Agentboard</a>, a browser-based UI for managing tmux sessions. Usually a few Claude Code sessions are still running from the night before. The core idea is simple: while one agent is working, I'm reviewing another's output or writing the next prompt. Waiting for an agent to finish is dead time, so I try to always have something else in flight.</p>
+
+                <p>The downside of this is that downtime between prompts is dangerously tempting. I kept catching myself on Twitter while waiting, so I built a Chrome extension called <a href="https://github.com/andrewting19/hush-focus" target="_blank">Hush Focus</a>. It blocks Twitter and YouTube unless I have an active coding session running. When everything finishes, access gets cut. It also plays a notification sound when a session completes so I know to come back.</p>
+
+                <p>Running things in parallel has a real context switching cost. If agents responded instantly I'd just work on one thing at a time. But with 5-10 minute waits per task, even two or three parallel tracks is a huge improvement over the old loop of prompt, wait, stare, prompt again.</p>
+
+                <h2>YOLO mode (safely)</h2>
+
+                <p>I run Claude Code and Codex with zero permission restrictions. No sandbox, no approval prompts. This was the single biggest speed unlock. Having to manually approve every file edit keeps you glued to the terminal, which kills the whole parallel workflow.</p>
+
+                <p>The safety net is Docker. My open-source setup <a href="https://github.com/andrewting19/claude-ting" target="_blank">Claude Ting</a> runs each agent in an isolated container. Despite the name, it supports both Claude Code and Codex. The container can only see the mounted project folder, and auth persists automatically so you don't have to re-login every time. Full autonomy without the risk.</p>
+
+                <p>I've been running this since mid-2025 and iterating on it ever since. Each container also ships with its own headless Chromium browser, a virtual display, and Playwright MCP to control it. Agents can spin up dev servers and test their own UI changes, or browse the web when they need to look something up.</p>
+
+                <h2>Agentboard</h2>
+
+                <p><a href="https://github.com/gbasin/agentboard" target="_blank">Agentboard</a> is a web UI for tmux. I'm not the creator but I'm one of the main contributors. The idea is simple: all your terminal sessions, visible in one browser tab.</p>
+
+                <img src="../../../assets/img/agentboard-example.png" alt="Agentboard showing multiple Claude Code sessions running in a browser-based tmux layout">
+
+                <p>Every Claude Code session runs in tmux. Agentboard lays them all out so you can see what each one is doing. When an agent spawns a sub-agent, Agentboard picks it up automatically because it's just another tmux session. You can watch, jump in, or kill anything at any time.</p>
+
+                <p>The best part: because it's in the browser, it works from anywhere. I run <a href="https://tailscale.com" target="_blank">Tailscale</a> on my laptop, phone, and VPS. As long as my laptop is on, I can manage everything from my phone. The only bottleneck is screen size and not having a physical keyboard.</p>
+
+                <h2>Agents spawning agents</h2>
+
+                <p>Claude Code has built-in sub-agents, but you can't see what they're doing and you can't take over if they go sideways. So I built the <a href="https://github.com/andrewting19/claude-ting" target="_blank">Dev Sessions MCP</a> as part of Claude Ting.</p>
+
+                <p>It's simpler than it sounds. Creating a "developer" just starts a tmux session running Claude or Codex, either in a container or natively on your machine. The MCP gives agents three operations: create a developer, send it a message, and read its recent output. Each session gets a randomly generated League of Legends champion + role as its ID (e.g., "riven-jg" or "ahri-mid"), which makes them easy to track.</p>
+
+                <p>What this enables is a clean manager-worker pattern. The main Claude Code instance becomes the orchestrator. It understands the task, breaks it into pieces, spins up developers for each one, monitors progress, and pulls the results together. Since everything runs in tmux, Agentboard picks it all up automatically.</p>
+
+                <p>I have a few custom skills for different orchestration styles:</p>
+
+                <ul>
+                    <li><code>/dev-control</code> - orchestrate tasks by remote-controlling developers through the MCP</li>
+                    <li><code>/architect</code> - similar approach but using Claude Code's built-in sub-agents</li>
+                    <li><code>/handoff</code> - transfer work to a fresh session when context fills up, with a targeted briefing instead of lossy compression</li>
+                </ul>
+
+                <p>The <code>/handoff</code> skill is worth highlighting. Claude Code's built-in <code>/compact</code> takes too long and the summaries aren't great. They include irrelevant information while dropping context that matters. My approach skips compression entirely. Instead, the current agent writes a briefing for a fresh session with just the relevant details for what comes next. It works much better.</p>
+
+                <p>Context management is honestly the most frustrating part of this whole workflow. The 200k token window sounds like a lot, but just reading the relevant files can eat half of it before real work starts. Sub-agents and handoffs are how I manage it, though I'm still looking for something better.</p>
+
+                <h2>Voice-to-text prompting</h2>
+
+                <p>This one is underrated. Speaking is just faster than typing, especially for longer prompts. I use NVIDIA's Parakeet speech-to-text models running locally through an app called <a href="https://github.com/cjpais/Handy" target="_blank">Handy</a>. There are paid options like Superwhisper and WisprFlow, but the open-source models are just as good and free. The transcription doesn't have to be perfect either. The AI figures out what you meant regardless.</p>
+
+                <h2>The stack</h2>
+
+                <div class="tool-card">
+                    <h3><a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank">Claude Code</a></h3>
+                    <p>The main coding agent. Replaced Cursor and the difference was immediately noticeable. Codex is solid too.</p>
+                </div>
+
+                <div class="tool-card">
+                    <h3><a href="https://github.com/andrewting19/claude-ting" target="_blank">Claude Ting</a></h3>
+                    <p>Docker setup for running agents with full autonomy. Includes browser automation and the Dev Sessions MCP for spawning and orchestrating multiple agents.</p>
+                </div>
+
+                <div class="tool-card">
+                    <h3><a href="https://github.com/gbasin/agentboard" target="_blank">Agentboard</a></h3>
+                    <p>All your agent sessions in one browser tab. Auto-discovers sub-agents, works on mobile via Tailscale, and makes the whole multi-agent workflow visible.</p>
+                </div>
+
+                <div class="tool-card">
+                    <h3><a href="https://github.com/andrewting19/hush-focus" target="_blank">Hush Focus</a></h3>
+                    <p>Blocks distracting sites unless you have an active coding session. Simple idea, surprisingly effective at keeping you in the flow.</p>
+                </div>
+
+                <div class="tool-card">
+                    <h3><a href="https://github.com/cjpais/Handy" target="_blank">Handy</a> + NVIDIA Parakeet</h3>
+                    <p>Local speech-to-text. Free, fast, no subscription. Voice prompting sounds silly until you realize how much faster it is.</p>
+                </div>
+
+                <hr>
+
+                <p>Has this made me more productive? By a lot. I'm a solo developer shipping at a pace that would have taken a team not that long ago.</p>
+
+                <p>Has it saved me money? Not even close. My Anthropic bill is something I try not to think about. But the leverage is worth it.</p>
+
+                <p>Everything here is open source. The biggest barrier to this workflow isn't the tooling. It's learning to trust the agent enough to let it work without hovering over every edit.</p>
+
+                <p>I've also been experimenting with <a href="https://openclaw.ai/" target="_blank">OpenClaw</a>, the open-source AI agent that's been going viral. It's become another meaningful part of my workflow, but that deserves its own post.</p>
+
+            </article>
+
             <footer>
                 <pre class="footer-ascii">
        _   _   _
@@ -501,5 +646,20 @@
         </div>
     </main>
 
+    <script>
+        function setMode(mode) {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+            document.getElementById('article-unhinged').style.display = mode === 'unhinged' ? '' : 'none';
+            document.getElementById('article-normal').style.display = mode === 'normal' ? '' : 'none';
+            history.replaceState(null, '', '#' + mode);
+        }
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => setMode(btn.dataset.mode));
+        });
+
+        const hash = window.location.hash.slice(1);
+        if (hash === 'normal' || hash === 'unhinged') setMode(hash);
+    </script>
 </body>
 </html>
