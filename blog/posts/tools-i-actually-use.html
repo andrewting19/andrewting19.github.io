@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="My actual AI coding setup — Claude Code, Agent Board, Docker sandboxing, and why I haven't touched an IDE in six months.">
+    <meta name="description" content="My actual AI coding setup  - Claude Code, Agent Board, Docker sandboxing, and why I haven't touched an IDE in six months.">
     <meta name="author" content="Andrew Ting">
     <meta property="og:title" content="Tools I Actually Use for AI-Assisted Coding">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://andrewting.dev/blog/posts/tools-i-actually-use.html">
-    <meta property="og:description" content="My actual AI coding setup — Claude Code, Agent Board, Docker sandboxing, and why I haven't touched an IDE in six months.">
-    <title>tools i actually use — andrew ting</title>
+    <meta property="og:description" content="My actual AI coding setup  - Claude Code, Agent Board, Docker sandboxing, and why I haven't touched an IDE in six months.">
+    <title>tools i actually use  - andrew ting</title>
 
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -360,15 +360,15 @@
 
             <article class="article-body fade-in delay-2">
 
-                <p>I haven't opened an IDE in six months. Not VS Code, not Cursor, nothing. Coding agents do literally 100% of my coding now. I just yap at my computer and code gets written. It's hilarious. It also actually works.</p>
+                <p>no cap no yap AI has written all my code for the past 6 months. no more IDE. no VS Code, no Cursor, no ma nothing. just good ol TUIs and claude code which definitely has no TUI bugs whatsoever. yup i'm not kidding. Coding agents do literally 100% of my coding now. all I do is yap at my computer and code gets written. bada bing bada boom. It's hilarious. It also actually works. It doesn't just work, it fucking flies.</p>
 
-                <p>No sponsored tools here. No affiliate links. Just the stuff I use every day.</p>
+                <p>now for the juicy content: here's the unfiltered recap of the tools that I use every day.</p>
 
                 <h2>How my day actually works</h2>
 
-                <p>I wake up, open <a href="https://github.com/gbasin/agentboard" target="_blank">Agent Board</a>, and usually have a few Claude Code sessions still running from the night before. I fire off new tasks in parallel — write a prompt, send it, switch to the next thing while it works. The key insight is that waiting for an agent to finish is dead time, and the best use of dead time is sending another agent a different task. Not scrolling Twitter.</p>
+                <p>I wake up, open <a href="https://github.com/gbasin/agentboard" target="_blank">Agentboard</a>. What's agentboard you ask? It's a web based UI wrapper around tmux, and I do all of my work from it. and usually have a few Claude Code sessions still running from the night before. I fire off new tasks in parallel  - write a prompt, send it, switch to the next thing while it works. The key insight is that waiting for an agent to finish is dead time, and the best use of dead time is sending another agent a different task. Not scrolling Twitter.</p>
 
-                <p>Speaking of Twitter — I got so tired of doomscrolling between prompts that I built a Chrome extension called <a href="https://github.com/andrewting19/hush-focus" target="_blank">Hush Focus</a>. It straight up blocks Twitter and YouTube unless I have an active Claude Code or Codex session running. The second an agent finishes and I have nothing running, access gets cut. It uses Claude Code hooks to detect active sessions. Kind of insane that I had to build software to stop myself from scrolling, but here we are.</p>
+                <p>Speaking of Twitter  - I got so tired of doomscrolling between prompts that I built a Chrome extension called <a href="https://github.com/andrewting19/hush-focus" target="_blank">Hush Focus</a>. It straight up blocks Twitter and YouTube unless I have an active Claude Code or Codex session running. The second an agent finishes and I have nothing running, access gets cut. It uses Claude Code hooks to detect active sessions. Kind of insane that I had to build software to stop myself from scrolling, but here we are.</p>
 
                 <p>There's a real context-switching tax to running things in parallel. I won't pretend otherwise. I'm still getting better at it. But even running just two or three tracks at once is way more productive than the old loop of prompt, wait, stare at terminal, prompt again.</p>
 
@@ -376,7 +376,7 @@
 
                 <p>I run Claude Code and Codex with zero permission restrictions. No approval prompts. Nothing. Full auto.</p>
 
-                <p>Before you freak out — it's all inside Docker. My setup is <a href="https://github.com/andrewting19/claude-ting" target="_blank">Claude Ting</a>, an open-source Docker sandbox I built. The agent can only see the mounted project folder. Auth is handled automatically so you don't have to re-login every time. You get the speed of YOLO mode without the risk of Claude deleting your home directory.</p>
+                <p>Before you freak out  - it's all inside Docker. My setup is <a href="https://github.com/andrewting19/claude-ting" target="_blank">Claude Ting</a>, an open-source Docker sandbox I built. The agent can only see the mounted project folder. Auth is handled automatically so you don't have to re-login every time. You get the speed of YOLO mode without the risk of Claude deleting your home directory.</p>
 
                 <p>My take on YOLO mode: I used to be scared of it too. I came from Cursor where I ran YOLO mode just fine, but something about Claude Code having bash access made me nervous. So I built the container instead of dealing with the anxiety. But honestly? The models are smart enough now that catastrophic mistakes basically don't happen. If you write decent prompts and you're working in a reasonable codebase, the chance of the agent going rogue is close to zero. The container is a safety net I rarely actually need.</p>
 
@@ -384,17 +384,17 @@
 
                 <h2>Agent Board</h2>
 
-                <p><a href="https://github.com/gbasin/agentboard" target="_blank">Agent Board</a> is a web UI for tmux. I'm one of the main contributors. It sounds simple — and it is — but it changed how I work.</p>
+                <p><a href="https://github.com/gbasin/agentboard" target="_blank">Agent Board</a> is a web UI for tmux. I'm one of the main contributors. It sounds simple  - and it is  - but it changed how I work.</p>
 
                 <p>Every Claude Code session runs in tmux. Agent Board puts them all in a browser layout where I can see what each one is doing. When an agent spins up a sub-agent, Agent Board automatically discovers it because it's just another tmux session. I can watch, I can jump in and take over manually, I can kill it. Total visibility, all the time.</p>
 
                 <p>It's honestly better than Ghostty for my use case. Sorry, Ghostty. The scrolling is a little janky because tmux, but the tradeoff is worth it.</p>
 
-                <p>The other thing — because it's in the browser, I can use it from my phone. I have <a href="https://tailscale.com" target="_blank">Tailscale</a> on my laptop, phone, and VPS. So if I'm walking my dog, getting a haircut, whatever — as long as my laptop is on, I can manage all my agents from my phone. The bottleneck is just screen size and not having a keyboard. This could honestly be its own blog post too.</p>
+                <p>The other thing  - because it's in the browser, I can use it from my phone. I have <a href="https://tailscale.com" target="_blank">Tailscale</a> on my laptop, phone, and VPS. So if I'm walking my dog, getting a haircut, whatever  - as long as my laptop is on, I can manage all my agents from my phone. The bottleneck is just screen size and not having a keyboard. This could honestly be its own blog post too.</p>
 
                 <h2>Agents spawning agents</h2>
 
-                <p>Claude Code has built-in sub-agents. They're fine. But you can't see what they're doing and you can't take over if they go off track. So I built the <a href="https://github.com/andrewting19/claude-ting" target="_blank">Dev Sessions MCP</a> — it's part of the Claude Ting repo.</p>
+                <p>Claude Code has built-in sub-agents. They're fine. But you can't see what they're doing and you can't take over if they go off track. So I built the <a href="https://github.com/andrewting19/claude-ting" target="_blank">Dev Sessions MCP</a>  - it's part of the Claude Ting repo.</p>
 
                 <p>It's dead simple. Creating a "developer" just starts a tmux session and runs Claude or Codex in it. The MCP gives you two operations: send a message to a developer, and read the last N lines of their output. That's the whole thing.</p>
 
@@ -403,12 +403,12 @@
                 <p>I use this pattern so much I made slash command skills for it:</p>
 
                 <ul>
-                    <li><code>/dev-control</code> — orchestrate tasks across multiple developers with full visibility via the MCP</li>
-                    <li><code>/orchestrate</code> — similar but using Claude Code's built-in sub-agents</li>
-                    <li><code>/handoff</code> — this one's important. When context fills up (~200k tokens), start a fresh agent with a briefing that only includes what it needs to continue the work</li>
+                    <li><code>/dev-control</code>  - orchestrate tasks across multiple developers with full visibility via the MCP</li>
+                    <li><code>/orchestrate</code>  - similar but using Claude Code's built-in sub-agents</li>
+                    <li><code>/handoff</code>  - this one's important. When context fills up (~200k tokens), start a fresh agent with a briefing that only includes what it needs to continue the work</li>
                 </ul>
 
-                <p>I need to talk about <code>/handoff</code> for a second. Claude Code's built-in compaction is god-awful. I hate it. It throws away context that matters and the agent gets confused. My approach is different — I don't try to compress the existing session. I just start a new one and have the current agent write a briefing with only the relevant details for what comes next. The workflow continues like nothing happened. It works really, really well.</p>
+                <p>I need to talk about <code>/handoff</code> for a second. Claude Code's built-in compaction is god-awful. I hate it. It throws away context that matters and the agent gets confused. My approach is different  - I don't try to compress the existing session. I just start a new one and have the current agent write a briefing with only the relevant details for what comes next. The workflow continues like nothing happened. It works really, really well.</p>
 
                 <p>Context management is probably the single hardest part of working with Claude Code right now. The 200k window sounds big until you realize that just reading all the relevant files and docs puts you at 100k before you've even started working. Most of the skills I've built are just different strategies for dealing with this.</p>
 
@@ -418,7 +418,7 @@
 
                 <p>I use NVIDIA's Parakeet speech-to-text models running locally through an open-source app called <a href="https://github.com/nicepkg/handy" target="_blank">Handy</a>. Forget SuperWhisper. Forget WhisperFlow. Just download the Parakeet model and run it yourself. It's faster, it's at least as accurate, and it's free.</p>
 
-                <p>So yeah. I literally just talk to my computer, the transcription goes into Claude Code, and code comes out. I can explain complex context, constraints, edge cases — all the stuff that's tedious to type but natural to say out loud. It's a weird workflow. I look unhinged. But it's fast.</p>
+                <p>So yeah. I literally just talk to my computer, the transcription goes into Claude Code, and code comes out. I can explain complex context, constraints, edge cases  - all the stuff that's tedious to type but natural to say out loud. It's a weird workflow. I look unhinged. But it's fast.</p>
 
                 <h2>The stack</h2>
 
@@ -453,7 +453,7 @@
 
                 <p>Has it saved me money? No. I pay so much money to Anthropic. I'm pretty sure I'm personally increasing their shareholder value. But the leverage you get is worth every penny.</p>
 
-                <p>Everything here is open source. The setup takes an afternoon. The hardest part is letting go — trusting the agent enough to stop hovering over every file edit and just letting it work.</p>
+                <p>Everything here is open source. The setup takes an afternoon. The hardest part is letting go  - trusting the agent enough to stop hovering over every file edit and just letting it work.</p>
 
             </article>
 
