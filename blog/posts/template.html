@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Building with AI Agents - Andrew Ting">
+    <meta name="author" content="Andrew Ting">
+    <title>Building with AI Agents · andrew ting</title>
+
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-tertiary: #18181b;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #52525b;
+            --accent: #22d3ee;
+            --accent-dim: rgba(34, 211, 238, 0.15);
+            --border: #27272a;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+            --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Scanline effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.03) 2px,
+                rgba(0, 0, 0, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Status bar */
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-left {
+            color: var(--text-tertiary);
+        }
+
+        .status-left a {
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .status-left a:hover {
+            color: var(--accent);
+        }
+
+        .status-right {
+            display: flex;
+            gap: 20px;
+            color: var(--text-tertiary);
+        }
+
+        .status-right a {
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .status-right a:hover {
+            color: var(--accent);
+        }
+
+        .status-right a.active {
+            color: var(--accent);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Back nav */
+        .back-nav {
+            padding-top: 64px;
+            padding-bottom: 24px;
+        }
+
+        .back-nav a {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Article */
+        .article-header {
+            padding-top: 24px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 48px;
+        }
+
+        .article-header h1 {
+            font-family: var(--font-mono);
+            font-size: clamp(28px, 6vw, 40px);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .article-meta .separator {
+            color: var(--border);
+        }
+
+        .article-tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 3px 8px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-radius: 4px;
+        }
+
+        /* Article body */
+        .article-body {
+            padding-bottom: 80px;
+        }
+
+        .article-body h2 {
+            font-family: var(--font-mono);
+            font-size: 22px;
+            font-weight: 500;
+            margin-top: 48px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .article-body h2::before {
+            content: '## ';
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        .article-body h3 {
+            font-family: var(--font-mono);
+            font-size: 17px;
+            font-weight: 500;
+            margin-top: 36px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .article-body h3::before {
+            content: '### ';
+            color: var(--accent);
+            opacity: 0.4;
+        }
+
+        .article-body p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .article-body a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: text-decoration 0.2s;
+        }
+
+        .article-body a:hover {
+            text-decoration: underline;
+        }
+
+        .article-body strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .article-body em {
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        /* Inline code */
+        .article-body code {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            background: var(--bg-tertiary);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        /* Code blocks */
+        .article-body pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .article-body pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .code-label {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Syntax-ish highlighting */
+        .token-keyword { color: #c084fc; }
+        .token-string { color: #86efac; }
+        .token-comment { color: var(--text-tertiary); font-style: italic; }
+        .token-function { color: #93c5fd; }
+        .token-const { color: var(--accent); }
+        .token-number { color: #fbbf24; }
+
+        /* Lists */
+        .article-body ul,
+        .article-body ol {
+            list-style: none;
+            margin-bottom: 24px;
+            padding-left: 0;
+        }
+
+        .article-body ul li,
+        .article-body ol li {
+            color: var(--text-secondary);
+            font-size: 15px;
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+
+        .article-body ul li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-family: var(--font-mono);
+        }
+
+        .article-body ol {
+            counter-reset: list-counter;
+        }
+
+        .article-body ol li {
+            counter-increment: list-counter;
+        }
+
+        .article-body ol li::before {
+            content: counter(list-counter) '.';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        /* Blockquote */
+        .article-body blockquote {
+            border-left: 3px solid var(--accent);
+            margin: 28px 0;
+            padding: 16px 24px;
+            background: var(--bg-secondary);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .article-body blockquote p {
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 0;
+        }
+
+        /* Horizontal rule */
+        .article-body hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 48px 0;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-content {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .footer-ascii {
+            margin-bottom: 16px;
+            line-height: 1.2;
+            font-size: 10px;
+            color: var(--text-tertiary);
+            opacity: 0.5;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        /* Cursor blink */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--accent);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Selection */
+        ::selection {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+
+        @media (max-width: 600px) {
+            .article-body pre {
+                padding: 16px;
+            }
+
+            .article-meta {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="status-indicator"></span>
+            <a href="../../">andrew@ting:~$</a>
+        </div>
+        <div class="status-right">
+            <a href="../../#now">now</a>
+            <a href="../" class="active">blog</a>
+            <a href="../../#work">work</a>
+            <a href="../../#projects">projects</a>
+            <a href="../../#contact">contact</a>
+        </div>
+    </div>
+
+    <main>
+        <div class="container">
+            <nav class="back-nav fade-in">
+                <a href="../">&larr; cd ..</a>
+            </nav>
+
+            <header class="article-header fade-in delay-1">
+                <h1>Building with AI Agents</h1>
+                <div class="article-meta">
+                    <span>2026-02-05</span>
+                    <span class="separator">&middot;</span>
+                    <span>8 min read</span>
+                    <span class="separator">&middot;</span>
+                    <span class="article-tag">ai</span>
+                    <span class="article-tag">claude</span>
+                    <span class="article-tag">building</span>
+                </div>
+            </header>
+
+            <article class="article-body fade-in delay-2">
+                <p>
+                    Three months ago, I gave a Claude instance root access to a VPS and told it to manage itself. It now runs cron jobs, restarts its own processes, and writes daily notes. This is what I've learned about building with AI agents&mdash;and why I think the <strong>solo-builder thesis</strong> is more real than most people realize.
+                </p>
+
+                <h2>The Setup</h2>
+
+                <p>
+                    The idea was simple: instead of treating Claude as a tool I invoke, treat it as a <a href="#">collaborator that persists</a>. A digital teammate with its own workspace, memory, and autonomy. I called it <em>Moltbot</em>&mdash;a bot that molts, shedding old context and growing new capabilities.
+                </p>
+
+                <p>
+                    The stack is intentionally minimal. A single <code>pm2</code> process manages the gateway. Cron handles scheduling. Everything runs on a $12/month VPS. No Kubernetes, no microservices, no infrastructure complexity.
+                </p>
+
+                <pre><span class="code-label">bash</span><code><span class="token-comment"># The entire deployment</span>
+<span class="token-const">pm2</span> start gateway.js --name moltbot
+<span class="token-const">pm2</span> save
+<span class="token-const">pm2</span> startup
+
+<span class="token-comment"># Health check</span>
+<span class="token-const">curl</span> <span class="token-string">http://localhost:3000/health</span>
+<span class="token-comment"># => { "status": "ok", "uptime": "14d 6h" }</span></code></pre>
+
+                <h2>What Actually Works</h2>
+
+                <h3>Persistent Memory</h3>
+
+                <p>
+                    The biggest unlock was giving the agent <strong>persistent memory</strong>. Not RAG over a vector database&mdash;just flat markdown files in a <code>~/clawd/</code> directory. The agent reads them at session start and writes to them as it learns. Simple, debuggable, and it works surprisingly well.
+                </p>
+
+                <blockquote>
+                    <p>The best architecture is the one you can debug at 2am with <code>cat</code> and <code>grep</code>.</p>
+                </blockquote>
+
+                <p>
+                    Memory files are organized by topic, not chronology. There's a <code>MEMORY.md</code> that acts as an index, linking to detailed notes on specific domains. The agent prunes and updates these as its understanding evolves.
+                </p>
+
+                <h3>Recursive Self-Improvement</h3>
+
+                <p>
+                    Here's where it gets interesting. The agent can modify its own configuration, update its cron schedules, and even suggest improvements to its own codebase. This creates a feedback loop:
+                </p>
+
+                <ol>
+                    <li>Agent encounters a friction point</li>
+                    <li>Agent proposes a fix or optimization</li>
+                    <li>Human reviews and approves (or not)</li>
+                    <li>Agent applies the change and observes results</li>
+                </ol>
+
+                <p>
+                    Over three months, this loop has produced dozens of small improvements that I never would have thought to make myself. The agent noticed patterns in its own failures and fixed them.
+                </p>
+
+                <h2>The Hard Parts</h2>
+
+                <p>
+                    It's not all smooth sailing. Here are the real challenges:
+                </p>
+
+                <ul>
+                    <li>Context window limits mean the agent "forgets" within a conversation&mdash;memory files partially solve this but aren't perfect</li>
+                    <li>Error recovery is fragile. When something breaks at 3am, the agent sometimes makes it worse before making it better</li>
+                    <li>Testing agent behavior is fundamentally different from testing deterministic code</li>
+                    <li>Cost management requires careful attention to token usage and model selection</li>
+                </ul>
+
+                <h3>The Docker Pattern</h3>
+
+                <p>
+                    To run Claude Code in full-auto mode safely, I built <a href="#">claude-ting</a>&mdash;a Docker-based isolation layer. The key insight: give the agent <strong>maximum agency</strong> within a <strong>sandboxed environment</strong>. It can <code>rm -rf /</code> inside the container and nothing bad happens.
+                </p>
+
+                <pre><span class="code-label">typescript</span><code><span class="token-keyword">const</span> <span class="token-const">config</span>: <span class="token-function">AgentConfig</span> = {
+  <span class="token-function">model</span>: <span class="token-string">"claude-sonnet-4-5-20250929"</span>,
+  <span class="token-function">permissions</span>: <span class="token-string">"full-auto"</span>,
+  <span class="token-function">sandbox</span>: {
+    <span class="token-function">type</span>: <span class="token-string">"docker"</span>,
+    <span class="token-function">image</span>: <span class="token-string">"claude-ting:latest"</span>,
+    <span class="token-function">volumes</span>: [<span class="token-string">"/workspace:/workspace"</span>],
+    <span class="token-function">network</span>: <span class="token-string">"host"</span>,
+  },
+  <span class="token-function">memory</span>: {
+    <span class="token-function">persistent</span>: <span class="token-number">true</span>,
+    <span class="token-function">path</span>: <span class="token-string">"./clawd/memory"</span>,
+  },
+};
+
+<span class="token-comment">// Spawn an isolated agent session</span>
+<span class="token-keyword">const</span> <span class="token-const">session</span> = <span class="token-keyword">await</span> <span class="token-function">createAgentSession</span>(<span class="token-const">config</span>);
+<span class="token-keyword">await</span> <span class="token-const">session</span>.<span class="token-function">run</span>(<span class="token-string">"Fix the failing tests in /workspace/src"</span>);</code></pre>
+
+                <h2>What's Next</h2>
+
+                <p>
+                    I'm now building an <strong>evolutionary harness</strong>&mdash;a system where multiple agent variants compete on tasks, and the best-performing configurations survive and propagate. Think genetic algorithms, but for agent prompts and tool configurations.
+                </p>
+
+                <p>
+                    The thesis is simple: <strong>AI changes what one person can build alone</strong>. Two years ago, a single developer couldn't ship, monitor, and maintain production systems across multiple domains simultaneously. Now they can&mdash;if they're willing to treat AI agents as genuine collaborators rather than fancy autocomplete.
+                </p>
+
+                <hr>
+
+                <p>
+                    If you're experimenting with agentic AI workflows, I'd love to hear what's working for you. Reach me on <a href="#">Twitter</a> or <a href="#">GitHub</a>.
+                </p>
+            </article>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <pre class="footer-ascii">
+       _   _   _
+      /_\ | |_(_)_ _  __ _
+     / _ \|  _| | ' \/ _` |
+    /_/ \_\\__|_|_||_\__, |
+                     |___/
+            </pre>
+            <div class="footer-content">
+                <span>&copy; 2025 andrew ting &middot; built with claude</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

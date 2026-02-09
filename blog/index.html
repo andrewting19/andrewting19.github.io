@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Andrew Ting - Blog">
+    <meta name="author" content="Andrew Ting">
+    <title>blog · andrew ting</title>
+
+    <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-tertiary: #18181b;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #52525b;
+            --accent: #22d3ee;
+            --accent-dim: rgba(34, 211, 238, 0.15);
+            --border: #27272a;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+            --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Scanline effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.03) 2px,
+                rgba(0, 0, 0, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Status bar */
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-left {
+            color: var(--text-tertiary);
+        }
+
+        .status-left a {
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .status-left a:hover {
+            color: var(--accent);
+        }
+
+        .status-right {
+            display: flex;
+            gap: 20px;
+            color: var(--text-tertiary);
+        }
+
+        .status-right a {
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .status-right a:hover {
+            color: var(--accent);
+        }
+
+        .status-right a.active {
+            color: var(--accent);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Page content */
+        .page-content {
+            padding-top: 100px;
+            padding-bottom: 80px;
+            min-height: calc(100vh - 100px);
+        }
+
+        .prompt {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--text-tertiary);
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prompt-symbol {
+            color: var(--accent);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--accent);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Blog listing */
+        .blog-list {
+            display: grid;
+            gap: 24px;
+        }
+
+        .blog-card {
+            padding: 28px 32px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .blog-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .blog-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+
+        .blog-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .blog-card-meta .separator {
+            color: var(--border);
+        }
+
+        .blog-card h3 {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            transition: color 0.2s;
+        }
+
+        .blog-card:hover h3 {
+            color: var(--accent);
+        }
+
+        .blog-card p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .blog-card-footer {
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .blog-tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 4px 10px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-radius: 4px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-content {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .footer-ascii {
+            margin-bottom: 16px;
+            line-height: 1.2;
+            font-size: 10px;
+            color: var(--text-tertiary);
+            opacity: 0.5;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* Selection */
+        ::selection {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+
+        @media (max-width: 600px) {
+            .blog-card {
+                padding: 20px 24px;
+            }
+
+            .blog-card-meta {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="status-indicator"></span>
+            <a href="../">andrew@ting:~$</a>
+        </div>
+        <div class="status-right">
+            <a href="../#now">now</a>
+            <a href="./" class="active">blog</a>
+            <a href="../#work">work</a>
+            <a href="../#projects">projects</a>
+            <a href="../#contact">contact</a>
+        </div>
+    </div>
+
+    <main class="page-content">
+        <div class="container">
+            <div class="prompt fade-in">
+                <span class="prompt-symbol">$</span>
+                <span>ls ~/blog</span>
+                <span class="cursor"></span>
+            </div>
+
+            <div class="blog-list">
+                <a href="posts/template.html" class="blog-card fade-in delay-1">
+                    <div class="blog-card-meta">
+                        <span>2026-02-05</span>
+                        <span class="separator">·</span>
+                        <span>8 min read</span>
+                    </div>
+                    <h3>Building with AI Agents</h3>
+                    <p>What I learned from giving Claude full control of a VPS. Recursive self-improvement, developer tooling, and why the solo-builder thesis is real.</p>
+                    <div class="blog-card-footer">
+                        <span class="blog-tag">ai</span>
+                        <span class="blog-tag">claude</span>
+                        <span class="blog-tag">building</span>
+                    </div>
+                </a>
+
+                <a href="#" class="blog-card fade-in delay-2">
+                    <div class="blog-card-meta">
+                        <span>2026-01-20</span>
+                        <span class="separator">·</span>
+                        <span>5 min read</span>
+                    </div>
+                    <h3>Leaving Uniswap to Build Alone</h3>
+                    <p>Why I left a great job to bet on myself. Reflections on two years shipping crypto products, and what comes next when AI changes what one person can build.</p>
+                    <div class="blog-card-footer">
+                        <span class="blog-tag">career</span>
+                        <span class="blog-tag">startup</span>
+                    </div>
+                </a>
+
+                <a href="#" class="blog-card fade-in delay-3">
+                    <div class="blog-card-meta">
+                        <span>2026-01-08</span>
+                        <span class="separator">·</span>
+                        <span>6 min read</span>
+                    </div>
+                    <h3>Docker Isolation for Agentic AI</h3>
+                    <p>How I built claude-ting to run Claude Code in full-auto mode without the fear. Docker sandboxing, shared OAuth, and the tmux MCP server pattern.</p>
+                    <div class="blog-card-footer">
+                        <span class="blog-tag">docker</span>
+                        <span class="blog-tag">ai</span>
+                        <span class="blog-tag">devtools</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <pre class="footer-ascii">
+       _   _   _
+      /_\ | |_(_)_ _  __ _
+     / _ \|  _| | ' \/ _` |
+    /_/ \_\\__|_|_||_\__, |
+                     |___/
+            </pre>
+            <div class="footer-content">
+                <span>&copy; 2025 andrew ting &middot; built with claude</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
