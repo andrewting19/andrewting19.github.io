@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="My actual AI coding setup — Claude Code, Agent Board, Docker sandboxing, and why I haven't touched an IDE in six months.">
+    <meta name="author" content="Andrew Ting">
+    <meta property="og:title" content="Tools I Actually Use for AI-Assisted Coding">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://andrewting.dev/blog/posts/tools-i-actually-use.html">
+    <meta property="og:description" content="My actual AI coding setup — Claude Code, Agent Board, Docker sandboxing, and why I haven't touched an IDE in six months.">
+    <title>tools i actually use — andrew ting</title>
+
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-tertiary: #18181b;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #52525b;
+            --accent: #22d3ee;
+            --accent-dim: rgba(34, 211, 238, 0.15);
+            --border: #27272a;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+            --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Status bar */
+        .status-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-left { color: var(--text-tertiary); }
+
+        .status-right {
+            display: flex;
+            gap: 20px;
+            color: var(--text-tertiary);
+        }
+
+        .status-right a {
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .status-right a:hover { color: var(--accent); }
+        .status-right a.active { color: var(--accent); }
+
+        .status-indicator {
+            display: inline-block;
+            width: 6px; height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Back nav */
+        .back-nav {
+            padding-top: 64px;
+            margin-bottom: 48px;
+        }
+
+        .back-nav a {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-nav a:hover { color: var(--accent); }
+
+        /* Article header */
+        .article-header {
+            margin-bottom: 48px;
+        }
+
+        .article-header h1 {
+            font-family: var(--font-mono);
+            font-size: clamp(28px, 6vw, 40px);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-tertiary);
+            flex-wrap: wrap;
+        }
+
+        .article-tag {
+            padding: 2px 10px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        /* Article body */
+        .article-body {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .article-body h2 {
+            font-family: var(--font-mono);
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-top: 48px;
+            margin-bottom: 20px;
+        }
+
+        .article-body h3 {
+            font-family: var(--font-mono);
+            font-size: 17px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-top: 36px;
+            margin-bottom: 16px;
+        }
+
+        .article-body p {
+            margin-bottom: 20px;
+        }
+
+        .article-body a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .article-body a:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        .article-body strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .article-body code {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            padding: 2px 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        .article-body pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin: 24px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .article-body pre code {
+            padding: 0;
+            background: none;
+            border: none;
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .article-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 12px 24px;
+            margin: 24px 0;
+            background: var(--bg-secondary);
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .article-body ul, .article-body ol {
+            list-style: none;
+            margin: 16px 0 24px;
+        }
+
+        .article-body li {
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .article-body li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-family: var(--font-mono);
+        }
+
+        .article-body hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 48px 0;
+        }
+
+        .tool-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 20px 0;
+            transition: border-color 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: var(--accent);
+        }
+
+        .tool-card h3 {
+            margin-top: 0 !important;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 80px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-family: var(--font-mono);
+            font-size: 12px;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .hide-mobile { display: none; }
+            .article-body pre { padding: 16px; }
+            .article-meta { gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="status-indicator"></span>
+            <span>andrew@ting:~$</span>
+        </div>
+        <div class="status-right">
+            <a href="../../#now">now</a>
+            <a href="../../#work">work</a>
+            <a href="../../#projects">projects</a>
+            <a href="../../#contact" class="hide-mobile">contact</a>
+            <a href="../" class="active">blog</a>
+        </div>
+    </div>
+
+    <main>
+        <div class="container">
+            <div class="back-nav fade-in">
+                <a href="../">← cd ~/blog</a>
+            </div>
+
+            <header class="article-header fade-in delay-1">
+                <h1>Tools I Actually Use</h1>
+                <div class="article-meta">
+                    <span>2026-02-09</span>
+                    <span>·</span>
+                    <span>7 min read</span>
+                    <span class="article-tag">ai</span>
+                    <span class="article-tag">tooling</span>
+                    <span class="article-tag">workflow</span>
+                </div>
+            </header>
+
+            <article class="article-body fade-in delay-2">
+
+                <p>Coding agents have done 100% of my coding work for the past six months. I haven't manually edited a file in an IDE since I switched from Cursor to Claude Code. That sounds like hyperbole. It's not.</p>
+
+                <p>Here's what my actual setup looks like — no sponsored tools, no affiliate links, just the stuff I use every day to ship software by talking to my computer.</p>
+
+                <h2>The Daily Loop</h2>
+
+                <p>I start the day by firing off tasks to coding agents in parallel. The workflow is simple: write a prompt, send it, switch context to the next task while it works, come back when it's done. Repeat.</p>
+
+                <p>This sounds easy but there's a real context-switching tax. The trick is having 2–3 tracks running simultaneously — enough to stay productive during wait times, not so many that you lose track of what's happening. I'm actively getting better at this.</p>
+
+                <p>The biggest enemy of this workflow? Twitter. So I built a Chrome extension called <a href="https://github.com/andrewting19/hush-focus" target="_blank">Hush Focus</a> that blocks my access to Twitter and YouTube <strong>unless</strong> I have an active Claude Code or Codex session running. The moment an agent finishes and nothing is actively working, my access gets cut. It's implemented using Claude Code hooks and smart log polling for Codex. Honestly, this could be its own blog post.</p>
+
+                <h2>Claude Code in a Docker Sandbox</h2>
+
+                <p>I run Claude Code and Codex exclusively inside a Docker sandbox with zero permission restrictions. No approval prompts, no "are you sure?" dialogs, nothing. Full YOLO mode.</p>
+
+                <p>"Isn't that dangerous?"</p>
+
+                <p>Here's my take: the models used to be dumb enough to accidentally nuke your filesystem. They're not anymore. With current-generation models, the probability of a catastrophic mistake is near zero — <strong>if</strong> you're reasonably precise in your prompts. The only thing stopping most people from going full-auto is trust. And I solve the trust problem with a container.</p>
+
+                <p>My setup is <a href="https://github.com/andrewting19/claude-ting" target="_blank">Claude Ting</a> — an open-source Docker sandbox for Claude Code. The agent can only access the mounted project folder. Auth is handled automatically (no re-login headaches). You get full YOLO-mode speed with none of the risk. I've been running this since mid-2025 and it's the single biggest unlock for my productivity.</p>
+
+                <blockquote>
+                    <p>YOLO mode + Docker isolation was the first big speed unlock. Voice-to-text prompting was the second.</p>
+                </blockquote>
+
+                <h2>Agent Board</h2>
+
+                <p>I manage all my coding sessions through <a href="https://github.com/gbasin/agentboard" target="_blank">Agent Board</a> — a web-based UI wrapper around tmux. Think of it as your terminal, but in the browser, with every coding agent session visible in a clean layout.</p>
+
+                <p>Why this matters: when your agents spin up sub-agents (more on that below), Agent Board automatically discovers them as new tmux sessions. I get full visibility into what every agent is doing at all times. If something goes sideways, I can jump into any session and take over manually. This flow — automated by default, manual takeover when needed — is incredibly powerful.</p>
+
+                <p>The other killer feature: because it's browser-based, I can code from my phone. I have <a href="https://tailscale.com" target="_blank">Tailscale</a> connecting my laptop, phone, and VPS. As long as my laptop is on — even if I'm walking my dog or getting a haircut — I have full access to all my coding agents from my phone. The only bottleneck is screen size and not having a keyboard.</p>
+
+                <h2>Orchestrating Agents with Agents</h2>
+
+                <p>Claude Code's built-in sub-agents work fine, but you can't see what they're doing or take over if they go off the rails. So I built the <a href="https://github.com/andrewting19/claude-ting" target="_blank">Dev Sessions MCP</a> — an MCP server that lets Claude Code spawn and manage other Claude Code instances.</p>
+
+                <p>Under the hood, it's simple: creating a "developer" just starts a tmux session and runs Claude or Codex in it. The MCP exposes two operations — send a message to a developer, and read the last N lines of their output. That's it.</p>
+
+                <p>But this is where it gets interesting. My main Claude Code instance acts like a manager. It breaks down complex tasks, delegates to sub-agents via the MCP, monitors progress, and synthesizes results. And because every sub-agent is just a tmux session, Agent Board picks them up automatically — so I always have eyes on everything.</p>
+
+                <p>I use this enough that I built custom skills (slash commands) for common patterns:</p>
+
+                <ul>
+                    <li><code>/orchestrate</code> — break a task into sub-tasks and delegate to built-in sub-agents</li>
+                    <li><code>/dev-control</code> — same thing but using the Dev Sessions MCP for full visibility</li>
+                    <li><code>/handoff</code> — when context gets full (~200k tokens), spin up a fresh agent with only the relevant context from the current session. Basically lossless context continuation without the garbage built-in compaction</li>
+                </ul>
+
+                <p>The <code>/handoff</code> skill deserves special mention. Claude Code's built-in compaction is awful — it throws away important context and confuses the agent. My approach is to start a new session entirely, with a carefully crafted briefing that carries over only what matters. It works shockingly well.</p>
+
+                <h2>Voice-to-Text Prompting</h2>
+
+                <p>The second biggest speed unlock after YOLO mode: I prompt my coding agents with my voice.</p>
+
+                <p>I use NVIDIA's <strong>Parakeet</strong> speech-to-text models running locally through an open-source app called <a href="https://github.com/nicepkg/handy" target="_blank">Handy</a>. It's faster and more accurate than SuperWhisper or WhisperFlow, and it's free. Download the model, run it on your machine, done.</p>
+
+                <p>So my actual workflow is: I yap at my computer, the transcription gets piped into Claude Code, and code gets written. It's genuinely hilarious. But it's also genuinely faster than typing — especially for complex prompts where you need to explain context, constraints, and desired behavior in detail.</p>
+
+                <h2>The Stack</h2>
+
+                <div class="tool-card">
+                    <h3><a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank">Claude Code</a></h3>
+                    <p>The coding agent. Replaced Cursor completely. Better results, faster execution, and with YOLO mode enabled it's not even close.</p>
+                </div>
+
+                <div class="tool-card">
+                    <h3><a href="https://github.com/andrewting19/claude-ting" target="_blank">Claude Ting</a></h3>
+                    <p>My Docker sandbox for running Claude Code in full-auto mode. Open source. Handles auth, mounts your project folder, keeps your system safe.</p>
+                </div>
+
+                <div class="tool-card">
+                    <h3><a href="https://github.com/gbasin/agentboard" target="_blank">Agent Board</a></h3>
+                    <p>Web UI for tmux. See all your agent sessions, take over anytime, access from your phone. I'm a main contributor.</p>
+                </div>
+
+                <div class="tool-card">
+                    <h3>Dev Sessions MCP</h3>
+                    <p>MCP server for agent-to-agent orchestration. Part of the Claude Ting repo. Lets your main agent spawn and manage sub-agents with full visibility.</p>
+                </div>
+
+                <div class="tool-card">
+                    <h3><a href="https://github.com/andrewting19/hush-focus" target="_blank">Hush Focus</a></h3>
+                    <p>Chrome extension that blocks distracting sites unless you have active agent sessions. Accountability through automation.</p>
+                </div>
+
+                <div class="tool-card">
+                    <h3>Handy + NVIDIA Parakeet</h3>
+                    <p>Local speech-to-text. Free, fast, accurate. The voice-prompting unlock is real.</p>
+                </div>
+
+                <hr>
+
+                <p>Has this saved me time? An absurd amount. Has it saved me money? Absolutely not — I'm pretty sure I'm Anthropic's biggest customer at this point. But the leverage is insane. I'm a solo developer shipping at a pace that would've required a team two years ago.</p>
+
+                <p>The tools are all open source. The setup takes maybe an afternoon. The hardest part is trusting the agent enough to let go of the keyboard.</p>
+
+            </article>
+
+            <footer>
+                <p>andrew ting · 2026</p>
+            </footer>
+        </div>
+    </main>
+
+</body>
+</html>
