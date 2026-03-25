@@ -13,7 +13,7 @@ Personal website and blog for Andrew Ting. Static HTML site hosted on GitHub Pag
 1. Create directory: `blog/posts/<slug>/`
 2. Copy `blog/posts/template.html` to `blog/posts/<slug>/index.html`
 3. Update the content, title, meta tags, date, read time, and tags
-4. Add a card entry to `blog/index.html` in the `.blog-list` div
+4. **Add a card entry to `blog/index.html`** in the `.blog-list` div (newest posts first). Don't forget this step!
 5. Asset paths from posts use `../../../assets/` (three levels up)
 
 ### Conventions
