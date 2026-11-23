@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Andrew Ting - Software Engineer building with AI">
+    <meta name="description" content="Andrew Ting - engineer and founder building ML systems and the AI agents that run them">
     <meta name="author" content="Andrew Ting">
     <meta property="og:title" content="Andrew Ting">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://andrewting19.github.io/">
-    <meta property="og:description" content="Software Engineer. Ex-Uniswap. Building with AI.">
+    <meta property="og:url" content="https://andrewting.dev/">
+    <meta property="og:description" content="Engineer and founder. ML systems and AI agents. Ex-Uniswap.">
     <title>andrew ting</title>
 
     <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
@@ -637,7 +637,8 @@
                         andrew <span class="highlight">ting</span><span class="cursor"></span>
                     </h1>
                     <p class="hero-subtitle fade-in delay-2">
-                        Software engineer building with AI. Previously Uniswap Labs.
+                        Engineer and founder. I build ML systems and the AI agents that run and improve them.
+                        Previously Uniswap Labs.
                         Seeing what compounds.
                     </p>
                     <div class="hero-meta fade-in delay-3">
@@ -662,18 +663,17 @@
                 </div>
                 <div class="now-content">
                     <div class="now-item">
-                        <h3>Building independently</h3>
+                        <h3>Running a one-person ML company</h3>
                         <p>
-                            Left Uniswap in October 2025 to build full-time with AI. Shipping fast with Claude Code.
-                            Exploring ML, automation, trading systems, and whatever seems interesting.
+                            Left Uniswap in October 2025 to run an undisclosed ML prediction SaaS product full-time.
+                            It has served 1,700+ paying customers, and I build and operate it with a team of AI agents.
                             The thesis: AI changes what one person can build alone.
                         </p>
                     </div>
                     <div class="now-item">
                         <h3>Current focus</h3>
                         <p>
-                            Building an evolutionary harness for Claude. Recursive self-improvement
-                            in competitive markets.
+                            Figuring out my next big bet. Building agent systems that compound.
                         </p>
                     </div>
                 </div>
@@ -687,6 +687,26 @@
                 </div>
                 <div class="experience-list">
                     <div class="experience-item">
+                        <div class="experience-date">2025 - now</div>
+                        <div class="experience-content">
+                            <h3>Founder</h3>
+                            <div class="company">Ting Research LLC</div>
+                            <ul>
+                                <li>Solo technical founder of a profitable, undisclosed ML prediction SaaS with 1,700+ paying customers. I built and run all of it: models, data pipelines, frontend, backend, and infrastructure.</li>
+                                <li>Agents run model research end to end, from idea to experiment to deploy. 47 research projects in 2026.</li>
+                                <li>An agent team handles day-to-day operations, from alerts to bug fixes, and escalates risky changes to me. 600+ issues closed in 7 weeks.</li>
+                                <li>Built evals that test agent setups on real past work, so I can measure if a change to the agents helps.</li>
+                            </ul>
+                            <div class="experience-tech">
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Postgres</span>
+                                <span class="tech-tag">Claude Code</span>
+                                <span class="tech-tag">Codex</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="experience-item">
                         <div class="experience-date">2023 - 2025</div>
                         <div class="experience-content">
                             <h3>Software Engineer</h3>
@@ -694,7 +714,7 @@
                             <ul>
                                 <li>Shipped uni.eth usernames (on-chain ENS subdomains). 2M+ claimed.</li>
                                 <li>Built Token Warnings system protecting $50B+ in annual swap volume</li>
-                                <li>Led AI coding adoption across 50+ person eng org. Open-sourced internal tooling.</li>
+                                <li>Moved to the Dev AI team in 2025. Led AI coding adoption across 50+ person eng org. Open-sourced internal tooling.</li>
                                 <li>Built Slack bot using Claude + BigQuery for natural language analytics</li>
                             </ul>
                             <div class="experience-tech">
@@ -782,50 +802,100 @@
                     <span>// projects</span>
                 </div>
                 <div class="projects-grid">
+                    <a href="https://github.com/andrewting19/ting.sh" target="_blank" class="project-card">
+                        <div class="project-header">
+                            <h3>ting.sh</h3>
+                            <span class="project-arrow">↗</span>
+                        </div>
+                        <p>
+                            A self-hosted web terminal that puts every machine on my Tailscale network in one
+                            interface. It's how I run coding agents from my iPad and iPhone, and my daily driver
+                            whenever I use a TUI or the terminal directly. Better than any other app I've tried.
+                        </p>
+                        <div class="experience-tech">
+                            <span class="tech-tag">TypeScript</span>
+                            <span class="tech-tag">PTY</span>
+                            <span class="tech-tag">Tailscale</span>
+                        </div>
+                    </a>
+
+                    <a href="https://huggingface.co/andrewting/Swift-Qwen3.8-27B-Abliterated" target="_blank" class="project-card">
+                        <div class="project-header">
+                            <h3>Swift-Qwen3.8-27B-Abliterated</h3>
+                            <span class="project-arrow">↗</span>
+                        </div>
+                        <p>
+                            Removed refusals from a fine-tuned Qwen 3.8 27B with refusal-direction ablation.
+                            Hard refusals went from 128/128 to 0/128, and benchmarks stayed within 1 point. 1,500+ downloads.
+                        </p>
+                        <div class="experience-tech">
+                            <span class="tech-tag">Interpretability</span>
+                            <span class="tech-tag">Hugging Face</span>
+                        </div>
+                    </a>
+
+                    <a href="https://github.com/andrewting19/abliteration-station" target="_blank" class="project-card">
+                        <div class="project-header">
+                            <h3>Abliteration Station</h3>
+                            <span class="project-arrow">↗</span>
+                        </div>
+                        <p>
+                            Runs self-hosted LLMs on rented RTX 5090s. Starts a GPU on demand, stops it after 10 idle
+                            minutes, and restores the KV cache on wake. Qwen 3.8 27B at 80+ tok/s with 100k context.
+                        </p>
+                        <div class="experience-tech">
+                            <span class="tech-tag">Vast.ai</span>
+                            <span class="tech-tag">LLM inference</span>
+                        </div>
+                    </a>
+
                     <a href="https://github.com/andrewting19/claude-ting" target="_blank" class="project-card">
                         <div class="project-header">
                             <h3>claude-ting</h3>
                             <span class="project-arrow">↗</span>
                         </div>
                         <p>
-                            Run Claude Code in yolo mode with Docker isolation. One-click setup with shared OAuth.
-                            MCP server that lets Claude spawn and control other Claude instances via tmux.
+                            Run Claude Code and Codex with no permission prompts inside a Docker sandbox. Host
+                            logins carry over, and agents can start and talk to other agent sessions through
+                            dev-sessions.
                         </p>
                         <div class="experience-tech">
                             <span class="tech-tag">Docker</span>
                             <span class="tech-tag">Claude Code</span>
-                            <span class="tech-tag">MCP</span>
+                            <span class="tech-tag">Codex</span>
                         </div>
                     </a>
 
-                    <a href="https://github.com/andrewting19/hush-focus" target="_blank" class="project-card">
+                    <a href="https://github.com/andrewting19/dev-sessions" target="_blank" class="project-card">
                         <div class="project-header">
-                            <h3>HUSH Focus</h3>
+                            <h3>dev-sessions</h3>
                             <span class="project-arrow">↗</span>
                         </div>
                         <p>
-                            Chrome extension that blocks distracting sites when Claude Code is idle.
-                            Turns doom-scrolling into a reward for shipping code. Forked and redesigned with custom notifications.
+                            CLI that lets coding agents spawn, message, and manage other Claude Code and Codex
+                            sessions, so one agent can hand off work and check on it. Published on npm.
                         </p>
                         <div class="experience-tech">
-                            <span class="tech-tag">Chrome Extension</span>
-                            <span class="tech-tag">Web Audio API</span>
-                        </div>
-                    </a>
-
-                    <a href="https://github.com/andrewting19/crypto-rsi-superstack-alert" target="_blank" class="project-card">
-                        <div class="project-header">
-                            <h3>Superstack</h3>
-                            <span class="project-arrow">↗</span>
-                        </div>
-                        <p>
-                            Real-time RSI dashboard for crypto and stocks. Custom Superstack indicator alerts.
-                            WebSocket feeds from Coinbase, Hyperliquid, and Alpaca.
-                        </p>
-                        <div class="experience-tech">
-                            <span class="tech-tag">React</span>
                             <span class="tech-tag">TypeScript</span>
-                            <span class="tech-tag">WebSockets</span>
+                            <span class="tech-tag">npm</span>
+                            <span class="tech-tag">Claude Code</span>
+                        </div>
+                    </a>
+
+                    <a href="https://fish.andrewiscool.com" target="_blank" class="project-card">
+                        <div class="project-header">
+                            <h3>Fishing Log</h3>
+                            <span class="project-arrow">↗</span>
+                        </div>
+                        <p>
+                            A first-person log of every fishing trip I've taken. Stand at the rail of the real boat,
+                            in that day's real weather, and reel up the fish I actually caught. Built from my
+                            texts, photo GPS, and historical weather and sea data.
+                        </p>
+                        <div class="experience-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">Blender</span>
+                            <span class="tech-tag">Cloudflare</span>
                         </div>
                     </a>
                 </div>
@@ -836,7 +906,7 @@
             <div class="container">
                 <div class="contact-content">
                     <h2>let's connect<span class="cursor"></span></h2>
-                    <p>Building something interesting or just want to chat about AI, crypto, or dev tools.</p>
+                    <p>Building something interesting or just want to chat about AI agents, ML research, or dev tools.</p>
                     <div class="contact-links">
                         <a href="mailto:andrewtingnyc@gmail.com" class="contact-link">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -879,7 +949,7 @@
                      |___/
             </pre>
             <div class="footer-content">
-                <span>© 2025 andrew ting · built with claude</span>
+                <span>© 2026 andrew ting · built with claude</span>
             </div>
         </div>
     </footer>
